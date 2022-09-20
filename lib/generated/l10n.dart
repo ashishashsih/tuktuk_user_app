@@ -760,6 +760,16 @@ class S {
     );
   }
 
+  /// `Next`
+  String get verify {
+    return Intl.message(
+      'Verify',
+      name: 'verify',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Enter code sent`
   String get verify_phone_heading_first_line {
     return Intl.message(

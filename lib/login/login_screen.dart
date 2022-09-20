@@ -12,6 +12,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:ridy/generated/l10n.dart';
 import 'package:ridy/login/login_verification_code_view.dart';
+import 'package:ridy/login/login_verification_screen.dart';
 import 'package:ridy/main/bloc/jwt_cubit.dart';
 import '../graphql/generated/graphql_api.graphql.dart';
 
@@ -39,99 +40,97 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: Form(
             key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 10,
-                ),
-                Image.asset(
-                  "images/markertuktuk.png",
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Welcome to TukTuk Electric",
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "google_fonts/DaysOne-Regular.ttf",
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 10,
                   ),
-                ),
-                Text(
-                  "Please provide your mobile number. Your phone number will be used for all ride related messages and OTP.",
-                  style: TextStyle(
-                    color: Color(0xffACACAC),
-                    fontSize: 16,
+                  Image.asset(
+                    "images/markertuktuk.png",
+                    fit: BoxFit.cover,
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "Enter your Mobile Number",
-                  style: TextStyle(
-                    color: Color(0xff464646),
-                    fontSize: 15,
+                  SizedBox(
+                    height: 20,
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.phone,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  decoration: InputDecoration(
-                    prefixIcon: CountryCodePicker(
-                      boxDecoration: BoxDecoration(
-                          color: CustomTheme.neutralColors.shade100,
-                          borderRadius: BorderRadius.circular(10)),
-                      initialSelection: countryCode,
-                      onChanged: (code) => countryCode = code.dialCode!,
+                  Text(
+                    "Welcome to TukTuk Electric",
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "google_fonts/DaysOne-Regular.ttf",
                     ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Color(0xff29BF79))),
-                    disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Color(0xff29BF79))),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Color(0xff29BF79))),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Color(0xff29BF79))),
-                    fillColor: Colors.white,
-                    filled: true,
-                    isDense: true,
-                    hintText: S.of(context).login_cell_number_textfield_hint,
                   ),
-                  onChanged: (value) => phoneNumber = value,
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return S.of(context).login_cell_number_empty_error;
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.06,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Color(0xffF4D206),
-                    borderRadius: BorderRadius.circular(30),
+                  Text(
+                    "Please provide your mobile number. Your phone number will be used for all ride related messages and OTP.",
+                    style: TextStyle(
+                      color: Color(0xffACACAC),
+                      fontSize: 16,
+                    ),
                   ),
-                  child: Mutation(
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "Enter your Mobile Number",
+                    style: TextStyle(
+                      color: Color(0xff464646),
+                      fontSize: 15,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.phone,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                    decoration: InputDecoration(
+                      prefixIcon: CountryCodePicker(
+                        boxDecoration: BoxDecoration(
+                            color: CustomTheme.neutralColors.shade100,
+                            borderRadius: BorderRadius.circular(10)),
+                        initialSelection: countryCode,
+                        onChanged: (code) => countryCode = code.dialCode!,
+                      ),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(color: Color(0xff29BF79))),
+                      disabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(color: Color(0xff29BF79))),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(color: Color(0xff29BF79))),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(color: Color(0xff29BF79))),
+                      fillColor: Colors.white,
+                      filled: true,
+                      isDense: true,
+                      hintText: S.of(context).login_cell_number_textfield_hint,
+                    ),
+                    onChanged: (value) => phoneNumber = value,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return S.of(context).login_cell_number_empty_error;
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Mutation(
                     options: MutationOptions(document: LOGIN_MUTATION_DOCUMENT),
-                    builder: (RunMutation runMutation, QueryResult? result) {
+                    builder: (MultiSourceResult<Object?> Function(
+                                Map<String, dynamic>,
+                                {Object? optimisticResult})
+                            runMutation,
+                        QueryResult<Object?>? result) {
                       return GestureDetector(
                         onTap: !agreedToTerms &&
                                 loginTermsAndConditionsUrl.isNotEmpty
@@ -166,20 +165,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                         (FirebaseAuthException e) async {
                                       if (e.message != null) {
                                         showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                                  content: Text(e.message!),
-                                                  actions: [
-                                                    TextButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        child: Text(S
-                                                            .of(context)
-                                                            .action_ok))
-                                                  ],
-                                                ));
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            content: Text(e.message!),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  S.of(context).action_ok,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        );
                                       }
 
                                       await FirebaseCrashlytics.instance
@@ -192,6 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         "loginVerificationCodeView",
                                         arguments: VerificationId(
                                           verificationId: verificationId,
+                                          mobileNumber: phoneNumber,
                                         ),
                                       );
                                     },
@@ -213,52 +214,120 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                 }
                               },
-                        child: Center(
-                          child: Text(
-                            "Next",
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.06,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Color(0xffF4D206),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Next",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
                       );
                     },
                   ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: new Container(
-                        margin: const EdgeInsets.only(left: 10.0, right: 20.0),
-                        child: Divider(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    Text("or"),
-                    Expanded(
-                      child: new Container(
-                        margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                        child: Divider(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  "Login with Social Accounts",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                  SizedBox(
+                    height: 30,
                   ),
-                ),
-              ],
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: new Container(
+                          margin:
+                              const EdgeInsets.only(left: 10.0, right: 20.0),
+                          child: Divider(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      Text("or"),
+                      Expanded(
+                        child: new Container(
+                          margin:
+                              const EdgeInsets.only(left: 20.0, right: 10.0),
+                          child: Divider(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: Text(
+                      "Login with Social Accounts",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.12,
+                        width: MediaQuery.of(context).size.height * 0.12,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(40),
+                          border: Border.all(
+                            color: Colors.green,
+                          ),
+                          image: DecorationImage(
+                            image: AssetImage(
+                              'images/icons8-google.png',
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.12,
+                        width: MediaQuery.of(context).size.height * 0.12,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(40),
+                          border: Border.all(
+                            color: Colors.green,
+                          ),
+                          image: DecorationImage(
+                            image: AssetImage(
+                              'images/Apple.png',
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.12,
+                        width: MediaQuery.of(context).size.height * 0.12,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(40),
+                          border: Border.all(
+                            color: Colors.green,
+                          ),
+                          image: DecorationImage(
+                            image: AssetImage(
+                              'images/icons8-facebook.png',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -52,8 +52,9 @@ dependencies:
   package_info_plus: ^1.4.0
   share_plus: ^4.0.10
   shimmer: ^2.0.0
-  sms_autofill: ^2.1.2
+  pin_code_fields: ^7.4.0
   timeago_flutter: ^1.1.0
+  flutter_onboarding_slider: ^1.0.7
   url_launcher: ^6.1.4
   velocity_x: ^3.5.1
   client_shared:
@@ -79,6 +80,7 @@ flutter:
     - images/logo.png
     - images/traveling_car.png
     - images/markertuktuk.png
+    - images/
     - google_fonts/
 
 flutter_intl:
