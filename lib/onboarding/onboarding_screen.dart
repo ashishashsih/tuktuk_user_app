@@ -110,12 +110,97 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(60),
-                    color: Colors.red,
+                    color: Colors.white,
+                    child: SafeArea(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.04,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 20, right: 70),
+                            child: Text(
+                              "Get the charge on the go with TukTuk.",
+                              style: TextStyle(
+                                height: 1.2,
+                                fontSize: 45,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "google_fonts/DaysOne-Regular.ttf",
+                                color: Color(0xff2591FD),
+                              ),
+                            ),
+                          ),
+                          Spacer(),
+                          Image.asset(
+                            "images/mobile.png",
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.05,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(60),
-                    color: Colors.red,
+                    color: Color(0xff3B7B3F),
+                    child: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                            ),
+                            Text(
+                              "0% pollution, environment friendly ride.",
+                              style: TextStyle(
+                                height: 1.2,
+                                fontSize: 45,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "google_fonts/DaysOne-Regular.ttf",
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.1,
+                            ),
+                            Image.asset(
+                              "images/auto_charge.png",
+                            ),
+                            Spacer(),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .pushNamed("locationSelectionParentView");
+                              },
+                              child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.06,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.yellow,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Lets Ride A TukTuk",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

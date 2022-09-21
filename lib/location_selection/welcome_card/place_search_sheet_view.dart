@@ -69,13 +69,15 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(children: [
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.close),
-            splashRadius: 20,
-          )
-        ]),
+        Row(
+          children: [
+            IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.close),
+              splashRadius: 20,
+            )
+          ],
+        ),
         Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -186,7 +188,9 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
                                                 .result.geometry!.location;
                                             return FullLocation(
                                                 latlng: lat_lng.LatLng(
-                                                    location.lat, location.lng),
+                                                  location.lat,
+                                                  location.lng,
+                                                ),
                                                 address: e.description ?? "",
                                                 title: detail.result.name);
                                           }).toList();
@@ -279,15 +283,18 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
         if (showChooseOnMap)
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
                   color: Colors.grey.shade300,
                   blurRadius: 1,
                   spreadRadius: -1,
-                  offset: const Offset(0, -3)),
-              const BoxShadow(
-                  color: Color(0xfff2f5fa), blurRadius: 10, spreadRadius: 5),
-            ]),
+                  offset: const Offset(0, -3),
+                ),
+                const BoxShadow(
+                    color: Color(0xfff2f5fa), blurRadius: 10, spreadRadius: 5),
+              ],
+            ),
             child: Center(
               child: CupertinoButton(
                 onPressed: () async {

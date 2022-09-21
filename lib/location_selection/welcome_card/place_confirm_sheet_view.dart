@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:client_shared/config.dart';
 import 'package:client_shared/map_providers.dart';
 import 'package:flutter/material.dart';
@@ -61,13 +60,14 @@ class _PlaceConfirmSheetViewState extends State<PlaceConfirmSheetView> {
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
-          maxZoom: 20,
-          zoom: 16,
-          center: widget.defaultLocation?.latlng ?? fallbackLocation,
-          interactiveFlags: InteractiveFlag.drag |
-              InteractiveFlag.pinchMove |
-              InteractiveFlag.pinchZoom |
-              InteractiveFlag.doubleTapZoom),
+        maxZoom: 20,
+        zoom: 16,
+        center: widget.defaultLocation?.latlng ?? fallbackLocation,
+        interactiveFlags: InteractiveFlag.drag |
+            InteractiveFlag.pinchMove |
+            InteractiveFlag.pinchZoom |
+            InteractiveFlag.doubleTapZoom,
+      ),
       children: [
         if (mapProvider == MapProvider.openStreetMap ||
             (mapProvider == MapProvider.googleMap &&
@@ -84,7 +84,8 @@ class _PlaceConfirmSheetViewState extends State<PlaceConfirmSheetView> {
         LocationMarkerLayerWidget(
           options: LocationMarkerLayerOptions(),
           plugin: const LocationMarkerPlugin(
-              centerOnLocationUpdate: CenterOnLocationUpdate.never),
+            centerOnLocationUpdate: CenterOnLocationUpdate.never,
+          ),
         ),
         Center(
           child: Padding(

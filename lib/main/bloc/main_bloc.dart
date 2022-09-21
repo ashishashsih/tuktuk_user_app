@@ -127,10 +127,13 @@ class OrderPreview extends MainBlocState {
       : super(
             isInteractive: false,
             markers: points
-                .mapIndexed((index, element) => MarkerDataPosition(
+                .mapIndexed(
+                  (index, element) => MarkerDataPosition(
                     id: index.toString(),
                     position: element.latlng,
-                    address: element.address))
+                    address: element.address,
+                  ),
+                )
                 .toList());
 }
 
