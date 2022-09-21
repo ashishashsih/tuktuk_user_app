@@ -303,7 +303,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           image: DecorationImage(
                             image: AssetImage(
-                              'images/Apple.png',
+                              'images/apple.png',
                             ),
                           ),
                         ),
