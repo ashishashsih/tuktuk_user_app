@@ -9,11 +9,9 @@ import '../../graphql/generated/graphql_api.graphql.dart';
 import 'package:ridy/location_selection/welcome_card/place_search_sheet_view.dart';
 import 'package:ridy/main/bloc/main_bloc.dart';
 import 'package:ridy/main/bloc/rider_profile_cubit.dart';
-import 'package:client_shared/theme/theme.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:latlong2/latlong.dart';
-
 import '../../address/address_item_view.dart';
 import '../../address/address_list_view.dart';
 import '../../main/bloc/current_location_cubit.dart';
@@ -53,21 +51,24 @@ class WelcomeCardView extends StatelessWidget {
                   points: result, selectedOptions: [], couponCode: null));
             },
             child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                    color: CustomTheme.neutralColors.shade100,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Ionicons.search,
-                      color: CustomTheme.primaryColors,
-                    ).pOnly(bottom: 4),
-                    Text("Where is your destination?",
-                            style: Theme.of(context).textTheme.labelLarge)
-                        .pOnly(left: 8)
-                  ],
-                )),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Color(0xffECF4F0),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Ionicons.search,
+                    color: Colors.green,
+                  ).pOnly(bottom: 4),
+                  Text(
+                    "Where is your destination?",
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ).pOnly(left: 8),
+                ],
+              ),
+            ),
           ),
           BlocBuilder<RiderProfileCubit, GetCurrentOrder$Query$Rider?>(
               builder: (context, state) {
@@ -93,25 +94,31 @@ class WelcomeCardView extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: addresses
-                              .map((GetAddresses$Query$RiderAddress address) =>
-                                  WelcomeCardSavedLocationButton(
-                                      onTap: () {
-                                        final currentLocation = context
-                                            .read<CurrentLocationCubit>()
-                                            .state;
-                                        if (currentLocation == null) {
-                                          showLocationNotDeterminedDialog(
-                                              context);
-                                          return;
-                                        }
-                                        context.read<MainBloc>().add(
-                                                ShowPreview(points: [
+                              .map(
+                                (GetAddresses$Query$RiderAddress address) =>
+                                    WelcomeCardSavedLocationButton(
+                                  onTap: () {
+                                    final currentLocation = context
+                                        .read<CurrentLocationCubit>()
+                                        .state;
+                                    if (currentLocation == null) {
+                                      showLocationNotDeterminedDialog(context);
+                                      return;
+                                    }
+                                    context.read<MainBloc>().add(
+                                          ShowPreview(
+                                            points: [
                                               currentLocation,
                                               address.toFullLocation()
-                                            ], selectedOptions: []));
-                                      },
-                                      type: address.type,
-                                      address: address.details))
+                                            ],
+                                            selectedOptions: [],
+                                          ),
+                                        );
+                                  },
+                                  type: address.type,
+                                  address: address.details,
+                                ),
+                              )
                               .toList(),
                         ),
                       ),
@@ -120,19 +127,39 @@ class WelcomeCardView extends StatelessWidget {
                       final currentLocation =
                           context.read<CurrentLocationCubit>().state;
                       await showBarModalBottomSheet(
-                          context: context,
-                          builder: (_) {
-                            return BlocProvider.value(
-                                value: BlocProvider.of<CurrentLocationCubit>(
-                                    context),
-                                child: AddressDetailsView(
-                                    currentLocation: currentLocation));
-                          });
+                        context: context,
+                        builder: (_) {
+                          return BlocProvider.value(
+                              value: BlocProvider.of<CurrentLocationCubit>(
+                                  context),
+                              child: AddressDetailsView(
+                                  currentLocation: currentLocation));
+                        },
+                      );
                       refetch!();
                     })
                   ]);
                 });
-          })
+          }),
+          Row(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.06,
+                width: MediaQuery.of(context).size.width * 0.14,
+                color: Color(0xffECF4F0),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.green,
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.05,
+              ),
+              Text(
+                "Add Favourite Location",
+              ),
+            ],
+          ),
         ],
       ),
     );

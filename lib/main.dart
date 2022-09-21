@@ -78,6 +78,8 @@ class MyApp extends StatelessWidget {
           supportedLocales: S.delegate.supportedLocales,
           routes: {
             'addresses': (context) => const AddressListView(),
+            'locationSelectionParentView': (context) =>
+                LocationSelectionParentView(),
             'privacyPolicy': (context) => const PrivacyPolicyScreen(),
             'loginVerificationCodeView': (context) => LogInVerificationScreen(),
             'loginScreen': (context) => LoginScreen(),
@@ -94,11 +96,11 @@ class MyApp extends StatelessWidget {
                     value: context.read<JWTCubit>(),
                     child: ProfileView(),
                   ),
-                )
+                ),
           },
           theme: CustomTheme.theme1,
-          home: ProfileScreen(),
-          // home: LocationSelectionParentView(),
+          // home: ProfileScreen(),
+          home: LocationSelectionParentView(),
         ),
       ),
     );

@@ -1,6 +1,5 @@
 import 'package:client_shared/config.dart';
 import 'package:client_shared/map_providers.dart';
-import 'package:client_shared/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,137 +31,157 @@ class OpenStreetMapState extends State<OpenStreetMapProvider>
   Widget build(BuildContext context) {
     var mainBloc = context.read<MainBloc>();
     return FlutterMap(
-        options: MapOptions(
-            onMapCreated: (c) => controller = c,
-            maxZoom: 20,
-            zoom: 16,
-            interactiveFlags: InteractiveFlag.none),
-        children: [
-          if (mapProvider == MapProvider.openStreetMap ||
-              (mapProvider == MapProvider.googleMap &&
-                  mapBoxAccessToken.isEmptyOrNull))
-            TileLayerWidget(
-              options: openStreetTileLayer,
-            ),
-          if (mapProvider == MapProvider.mapBox ||
-              (mapProvider == MapProvider.googleMap &&
-                  !mapBoxAccessToken.isEmptyOrNull))
-            TileLayerWidget(
-              options: mapBoxTileLayer,
-            ),
-          BlocBuilder<CurrentLocationCubit, FullLocation?>(
-              builder: (context, state) => state == null
-                  ? const SizedBox()
-                  : LocationMarkerLayerWidget(
-                      plugin: const LocationMarkerPlugin(
-                          centerOnLocationUpdate:
-                              CenterOnLocationUpdate.once))),
-          BlocConsumer<MainBloc, MainBlocState>(listener: (context, state) {
+      options: MapOptions(
+        onMapCreated: (c) => controller = c,
+        maxZoom: 20,
+        zoom: 16,
+        interactiveFlags: InteractiveFlag.none,
+      ),
+      children: [
+        if (mapProvider == MapProvider.openStreetMap ||
+            (mapProvider == MapProvider.googleMap &&
+                mapBoxAccessToken.isEmptyOrNull))
+          TileLayerWidget(
+            options: openStreetTileLayer,
+          ),
+        if (mapProvider == MapProvider.mapBox ||
+            (mapProvider == MapProvider.googleMap &&
+                !mapBoxAccessToken.isEmptyOrNull))
+          TileLayerWidget(
+            options: mapBoxTileLayer,
+          ),
+
+        /// Current location
+        BlocBuilder<CurrentLocationCubit, FullLocation?>(
+          builder: (context, state) => state == null
+              ? const SizedBox()
+              : LocationMarkerLayerWidget(
+                  plugin: const LocationMarkerPlugin(
+                    centerOnLocationUpdate: CenterOnLocationUpdate.once,
+                  ),
+                ),
+        ),
+
+        BlocConsumer<MainBloc, MainBlocState>(
+          listener: (context, state) {
             if (state is OrderPreview) {
               controller?.fitBounds(
-                  LatLngBounds.fromPoints(
-                      state.points.map((e) => e.latlng).toList()),
-                  options: fitBoundsOptions);
+                LatLngBounds.fromPoints(
+                  state.points.map((e) => e.latlng).toList(),
+                ),
+                options: fitBoundsOptions,
+              );
             }
             if (state is StateWithActiveOrder) {
               controller?.fitBounds(
-                  LatLngBounds.fromPoints(state.currentOrder.points
-                      .map((e) => e.toLatLng())
-                      .toList()),
-                  options: fitBoundsOptions);
+                LatLngBounds.fromPoints(state.currentOrder.points
+                    .map((e) => e.toLatLng())
+                    .toList()),
+                options: fitBoundsOptions,
+              );
             }
-          }, builder: (context, state) {
+          },
+          builder: (context, state) {
             return Stack(
               children: [
                 if (state is OrderPreview &&
                     state.directions != null &&
                     state.directions!.isNotEmpty)
                   PolylineLayerWidget(
-                      options:
-                          PolylineLayerOptions(saveLayers: true, polylines: [
-                    Polyline(
-                        points: state.directions!,
-                        strokeWidth: 5,
-                        color: CustomTheme.primaryColors)
-                  ])),
+                    options: PolylineLayerOptions(
+                      saveLayers: true,
+                      polylines: [
+                        Polyline(
+                          points: state.directions!,
+                          strokeWidth: 2,
+                          color: Colors.blue,
+                        ),
+                      ],
+                    ),
+                  ),
                 if (state is StateWithActiveOrder &&
                     state.currentOrder.directions != null)
                   PolylineLayerWidget(
-                      options:
-                          PolylineLayerOptions(saveLayers: true, polylines: [
-                    Polyline(
-                        points: state.currentOrder.directions!
-                            .map((e) => LatLng(e.lat, e.lng))
-                            .toList(),
-                        strokeWidth: 5,
-                        color: CustomTheme.primaryColors)
-                  ])),
+                    options: PolylineLayerOptions(
+                      saveLayers: true,
+                      polylines: [
+                        Polyline(
+                          points: state.currentOrder.directions!
+                              .map((e) => LatLng(e.lat, e.lng))
+                              .toList(),
+                          strokeWidth: 2,
+                          color: Colors.blue,
+                        ),
+                      ],
+                    ),
+                  ),
                 if (state is SelectingPoints)
                   FutureBuilder<List<Position?>>(
-                      future: Future.wait([
-                        if (!kIsWeb) Geolocator.getLastKnownPosition(),
-                        Geolocator.getCurrentPosition()
-                      ]),
-                      builder: (context, snapshot) {
-                        if (snapshot.data?.first != null ||
-                            snapshot.data?.last != null) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            setCurrentLocation(context, snapshot.data!);
-                          });
-                        }
-                        return BlocConsumer<CurrentLocationCubit,
-                            FullLocation?>(
-                          listener: (context, currentLocation) {
-                            // This is very important and could potentially fix the big bug we had
-                            if (!mounted || currentLocation == null) return;
-                            controller?.fitBounds(
-                                LatLngBounds.fromPoints(state.driverLocations
-                                    .followedBy(
-                                        [currentLocation.latlng]).toList()),
-                                options: fitBoundsOptions);
-                          },
-                          builder: (context, currentLocation) {
-                            if (currentLocation == null) {
+                    future: Future.wait([
+                      if (!kIsWeb) Geolocator.getLastKnownPosition(),
+                      Geolocator.getCurrentPosition()
+                    ]),
+                    builder: (context, snapshot) {
+                      if (snapshot.data?.first != null ||
+                          snapshot.data?.last != null) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          setCurrentLocation(context, snapshot.data!);
+                        });
+                      }
+                      return BlocConsumer<CurrentLocationCubit, FullLocation?>(
+                        listener: (context, currentLocation) {
+                          // This is very important and could potentially fix the big bug we had
+                          if (!mounted || currentLocation == null) return;
+                          controller?.fitBounds(
+                              LatLngBounds.fromPoints(state.driverLocations
+                                  .followedBy(
+                                      [currentLocation.latlng]).toList()),
+                              options: fitBoundsOptions);
+                        },
+                        builder: (context, currentLocation) {
+                          if (currentLocation == null) {
+                            return const SizedBox();
+                          }
+                          return Query(
+                            options: QueryOptions(
+                                document: GET_DRIVERS_LOCATION_QUERY_DOCUMENT,
+                                variables: GetDriversLocationArguments(
+                                        point: currentLocation.toPointInput())
+                                    .toJson()),
+                            builder: (QueryResult result,
+                                {Refetch? refetch, FetchMore? fetchMore}) {
+                              if (result.isLoading || result.hasException) {
+                                return const SizedBox();
+                              }
+                              final List<LatLng> locations =
+                                  GetDriversLocation$Query.fromJson(
+                                          result.data!)
+                                      .getDriversLocation
+                                      .map((e) => e.toLatLng())
+                                      .toList();
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                mainBloc.add(SetDriversLocations(locations));
+                              });
                               return const SizedBox();
-                            }
-                            return Query(
-                                options: QueryOptions(
-                                    document:
-                                        GET_DRIVERS_LOCATION_QUERY_DOCUMENT,
-                                    variables: GetDriversLocationArguments(
-                                            point:
-                                                currentLocation.toPointInput())
-                                        .toJson()),
-                                builder: (QueryResult result,
-                                    {Refetch? refetch, FetchMore? fetchMore}) {
-                                  if (result.isLoading || result.hasException) {
-                                    return const SizedBox();
-                                  }
-                                  final List<LatLng> locations =
-                                      GetDriversLocation$Query.fromJson(
-                                              result.data!)
-                                          .getDriversLocation
-                                          .map((e) => e.toLatLng())
-                                          .toList();
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    mainBloc
-                                        .add(SetDriversLocations(locations));
-                                  });
-                                  return const SizedBox();
-                                });
-                          },
-                        );
-                      }),
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 MarkerLayerWidget(
-                    options: MarkerLayerOptions(
-                        markers: state.markers
-                            .map((e) => e.toFlutterMapMarker())
-                            .toList())),
+                  options: MarkerLayerOptions(
+                    markers: state.markers
+                        .map((e) => e.toFlutterMapMarker())
+                        .toList(),
+                  ),
+                ),
               ],
             );
-          })
-        ]);
+          },
+        ),
+      ],
+    );
   }
 
   void setCurrentLocation(
@@ -212,4 +231,5 @@ class OpenStreetMapState extends State<OpenStreetMapProvider>
 
   //   controller.forward();
   // }
+
 }

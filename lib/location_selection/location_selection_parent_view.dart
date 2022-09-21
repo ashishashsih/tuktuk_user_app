@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:client_shared/config.dart';
 import 'package:client_shared/map_providers.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,11 +35,27 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 
 // ignore: must_be_immutable
-class LocationSelectionParentView extends StatelessWidget {
-  late GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  Refetch? refetch;
-  MapController? controller;
+class LocationSelectionParentView extends StatefulWidget {
   LocationSelectionParentView({Key? key}) : super(key: key);
+
+  @override
+  State<LocationSelectionParentView> createState() =>
+      _LocationSelectionParentViewState();
+}
+
+class _LocationSelectionParentViewState
+    extends State<LocationSelectionParentView> {
+  late GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  TextEditingController textEditingController = TextEditingController();
+
+  Refetch? refetch;
+
+  MapController? controller;
+
+  int? isSelected;
+  bool? selected;
+  bool isCheckBox = false;
 
   @override
   Widget build(BuildContext context) {
@@ -102,10 +121,13 @@ class LocationSelectionParentView extends StatelessWidget {
                             mainBloc
                                 .add(VersionStatusEvent(query.requireUpdate));
                           } else {
-                            mainBloc.add(ProfileUpdated(
+                            mainBloc.add(
+                              ProfileUpdated(
                                 profile: query.rider!,
                                 driverLocation:
-                                    query.getCurrentOrderDriverLocation));
+                                    query.getCurrentOrderDriverLocation,
+                              ),
+                            );
                           }
                         }
 
@@ -118,7 +140,365 @@ class LocationSelectionParentView extends StatelessWidget {
           return Stack(children: [
             if (state is OrderPreview)
               SmallBackFloatingActionButton(
-                  onPressed: () => context.read<MainBloc>().add(ResetState())),
+                onPressed: () => context.read<MainBloc>().add(
+                      ResetState(),
+                    ),
+              ),
+            if (state is OrderPreview)
+              Positioned(
+                bottom: 0,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xff0000004A),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.03,
+                        ),
+                        Text(
+                          "TukTuk Electric Auto",
+                          style: TextStyle(
+                            fontSize: 23,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "google_fonts/DaysOne-Regular.ttf",
+                          ),
+                        ),
+                        Text(
+                          "Choose your preference",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color(0xff9A9A9A),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.025,
+                        ),
+                        ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: auto.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 5,
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isSelected = index;
+                                  });
+                                  selected = true;
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 5,
+                                    horizontal: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isSelected == index
+                                        ? Color(0xffF4D206).withOpacity(0.5)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "${auto[index].title}",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${auto[index].price}",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        selected == true
+                            ? Divider(
+                                color: Colors.grey.withOpacity(0.3),
+                                height: 2,
+                              )
+                            : SizedBox(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        selected == true
+                            ? Text(
+                                "Ride Preference",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            : SizedBox(),
+                        selected == true
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Luggage",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    CupertinoSwitch(
+                                      value: isCheckBox,
+                                      onChanged: (val) {
+                                        setState(() {
+                                          isCheckBox = val;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : SizedBox(),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.025,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet<void>(
+                              // isScrollControlled: true,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SingleChildScrollView(
+                                  child: AnimatedPadding(
+                                    padding: MediaQuery.of(context).viewInsets,
+                                    duration: const Duration(milliseconds: 100),
+                                    curve: Curves.decelerate,
+                                    child: Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Coupon Code",
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily:
+                                                        "google_fonts/DaysOne-Regular.ttf",
+                                                  ),
+                                                ),
+                                                Icon(
+                                                  Icons.close,
+                                                  size: 30,
+                                                ),
+                                              ],
+                                            ),
+                                            Text(
+                                              "Type your coupon code to be applied",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Color(0xff9A9A9A),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 30,
+                                            ),
+                                            Container(
+                                              height: 50,
+                                              color: Color(0xffECF4F0),
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    "images/Edit.png",
+                                                  ),
+                                                  Expanded(
+                                                    child: TextFormField(
+                                                      controller:
+                                                          textEditingController,
+                                                      keyboardType:
+                                                          TextInputType.text,
+                                                      decoration:
+                                                          InputDecoration(
+                                                        border:
+                                                            OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide.none,
+                                                        ),
+                                                        disabledBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide.none,
+                                                        ),
+                                                        enabledBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide.none,
+                                                        ),
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide.none,
+                                                        ),
+                                                        fillColor:
+                                                            Color(0xffECF4F0),
+                                                        filled: true,
+                                                        isDense: true,
+                                                        hintText:
+                                                            "Enter coupon code",
+                                                        helperStyle: TextStyle(
+                                                          color:
+                                                              Color(0xffACACAC),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                if (textEditingController
+                                                    .text.isNotEmpty) {}
+                                              },
+                                              child: Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.06,
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.yellow,
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Apply",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color:
+                                                          textEditingController
+                                                                  .text
+                                                                  .isNotEmpty
+                                                              ? Colors.black
+                                                              : Colors.black
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 30,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.06,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.yellow,
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                "Coupon Code",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.yellow,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            if (selected == true) {}
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.06,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.yellow,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Book now",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: selected == true
+                                      ? Colors.black
+                                      : Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.05,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             if (state is SelectingPoints)
               MenuButton(
                 onPressed: () {
@@ -308,3 +688,14 @@ extension FullLocationHelper on FullLocation {
 
 const fitBoundsOptions = FitBoundsOptions(
     padding: EdgeInsets.only(top: 100, bottom: 500, left: 130, right: 130));
+
+class ChooseAuto {
+  final String? title;
+  final String? price;
+  ChooseAuto({this.title, this.price});
+}
+
+List<ChooseAuto> auto = [
+  ChooseAuto(title: "This start to end Ride", price: "235 ₹"),
+  ChooseAuto(price: "1005 ₹", title: "City Darshan"),
+];

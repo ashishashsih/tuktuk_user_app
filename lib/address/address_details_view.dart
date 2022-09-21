@@ -285,17 +285,17 @@ class _AddressDetailsViewState extends State<AddressDetailsView> {
                             : () async {
                                 if (_formKey.currentState!.validate()) {
                                   final args = UpdateAddressArguments(
-                                          id: widget.address!.id,
-                                          update: CreateRiderAddressInput(
-                                              title: title,
-                                              details: details!,
-                                              type: type,
-                                              location: PointInput(
-                                                  lat: mapController
-                                                      .center.latitude,
-                                                  lng: mapController
-                                                      .center.longitude)))
-                                      .toJson();
+                                    id: widget.address!.id,
+                                    update: CreateRiderAddressInput(
+                                      title: title,
+                                      details: details!,
+                                      type: type,
+                                      location: PointInput(
+                                        lat: mapController.center.latitude,
+                                        lng: mapController.center.longitude,
+                                      ),
+                                    ),
+                                  ).toJson();
                                   await runMutation(args).networkResult;
                                   if (!mounted) return;
                                   Navigator.pop(context);
@@ -311,15 +311,18 @@ class _AddressDetailsViewState extends State<AddressDetailsView> {
 
   DropdownMenuItem<RiderAddressType> createAddressType(RiderAddressType type) {
     return DropdownMenuItem(
-        value: type,
-        child: Row(children: [
+      value: type,
+      child: Row(
+        children: [
           Icon(
             getAddressTypeIcon(type),
             color: Colors.grey,
           ),
           const SizedBox(width: 8),
           Text(getAddressTypeName(context, type)),
-        ]));
+        ],
+      ),
+    );
   }
 }
 

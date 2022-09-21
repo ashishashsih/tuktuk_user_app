@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:client_shared/config.dart';
 import 'package:client_shared/map_providers.dart';
@@ -69,17 +70,20 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(children: [
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.close),
-            splashRadius: 20,
-          )
-        ]),
+        Row(
+          children: [
+            IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.close),
+              splashRadius: 20,
+            )
+          ],
+        ),
         Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: CustomTheme.neutralColors.shade100),
+            borderRadius: BorderRadius.circular(10),
+            color: Color(0xffECF4F0),
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -87,16 +91,19 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
                   children: selectedLocations.mapIndexed((e, index) {
                 return Column(
                   children: [
-                    Icon(
-                      index == 0
-                          ? Ionicons.navigate
-                          : (index == selectedLocations.length - 1
-                              ? Ionicons.location
-                              : Ionicons.flag),
-                      color: index == selectedLocations.length - 1
-                          ? CustomTheme.primaryColors
-                          : CustomTheme.neutralColors,
-                    ).p4(),
+                    index == 0
+                        ? Icon(
+                            Ionicons.navigate,
+                            color: CustomTheme.neutralColors,
+                          ).p4()
+                        : index == selectedLocations.length - 1
+                            ? Image.asset(
+                                "images/tuktuk_marker.png",
+                              )
+                            : Icon(
+                                Ionicons.flag,
+                                color: CustomTheme.neutralColors,
+                              ),
                     if (index != selectedLocations.length - 1)
                       const DottedLine(
                         direction: Axis.vertical,
@@ -151,12 +158,11 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
                                                 MapProvider.openStreetMap) {
                                           final res =
                                               await Nominatim.searchByName(
-                                                  query: value,
-                                                  countryCodes:
-                                                      nominatimCountries,
-                                                  addressDetails: true,
-                                                  nameDetails: true);
-
+                                            query: value,
+                                            countryCodes: nominatimCountries,
+                                            addressDetails: true,
+                                            nameDetails: true,
+                                          );
                                           if (mounted) {
                                             suggestionsCubit.showSuggestions(res
                                                 .map((e) =>
@@ -186,7 +192,9 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
                                                 .result.geometry!.location;
                                             return FullLocation(
                                                 latlng: lat_lng.LatLng(
-                                                    location.lat, location.lng),
+                                                  location.lat,
+                                                  location.lng,
+                                                ),
                                                 address: e.description ?? "",
                                                 title: detail.result.name);
                                           }).toList();
@@ -214,7 +222,7 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
                                               color: index ==
                                                       selectedLocations.length -
                                                           1
-                                                  ? CustomTheme.primaryColors
+                                                  ? Color(0xff3B7B3F)
                                                   : CustomTheme.neutralColors)),
                                 ),
                               ),
@@ -279,15 +287,19 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
         if (showChooseOnMap)
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
+            decoration: BoxDecoration(
+              color: Color(0xffF0F8F4),
+              boxShadow: [
+                BoxShadow(
                   color: Colors.grey.shade300,
                   blurRadius: 1,
                   spreadRadius: -1,
-                  offset: const Offset(0, -3)),
-              const BoxShadow(
-                  color: Color(0xfff2f5fa), blurRadius: 10, spreadRadius: 5),
-            ]),
+                  offset: const Offset(0, -3),
+                ),
+                const BoxShadow(
+                    color: Color(0xfff2f5fa), blurRadius: 10, spreadRadius: 5),
+              ],
+            ),
             child: Center(
               child: CupertinoButton(
                 onPressed: () async {
@@ -361,9 +373,10 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
                   itemCount: state.suggestions.length,
                   itemBuilder: ((context, index) {
                     return LocationSearchResultItem(
-                        location: state.suggestions[index],
-                        isHistory: false,
-                        onSelected: (location) => setLocation(location));
+                      location: state.suggestions[index],
+                      isHistory: false,
+                      onSelected: (location) => setLocation(location),
+                    );
                   })),
             );
           }
@@ -374,6 +387,7 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
 
   void setLocation(FullLocation location) {
     selectedLocations[selectedIndex] = location;
+
     if (selectedLocations
             .withoutFirst()
             .toList()
@@ -445,9 +459,8 @@ class LocationSearchResultItem extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                isHistory ? Ionicons.time : Ionicons.compass,
-                color: CustomTheme.neutralColors.shade400,
+              Image.asset(
+                "images/marker_logo.png",
               ),
               Expanded(
                 child: Column(
@@ -461,10 +474,10 @@ class LocationSearchResultItem extends StatelessWidget {
                       location.address,
                       overflow: TextOverflow.fade,
                       style: Theme.of(context).textTheme.labelMedium,
-                    )
+                    ),
                   ],
                 ).pOnly(left: 16),
-              )
+              ),
             ],
           ).pSymmetric(h: 16, v: 8),
           const Divider()
