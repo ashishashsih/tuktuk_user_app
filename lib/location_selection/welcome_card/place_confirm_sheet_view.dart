@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:client_shared/config.dart';
 import 'package:client_shared/map_providers.dart';
 import 'package:flutter/material.dart';
@@ -61,13 +60,14 @@ class _PlaceConfirmSheetViewState extends State<PlaceConfirmSheetView> {
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
-          maxZoom: 20,
-          zoom: 16,
-          center: widget.defaultLocation?.latlng ?? fallbackLocation,
-          interactiveFlags: InteractiveFlag.drag |
-              InteractiveFlag.pinchMove |
-              InteractiveFlag.pinchZoom |
-              InteractiveFlag.doubleTapZoom),
+        maxZoom: 20,
+        zoom: 16,
+        center: widget.defaultLocation?.latlng ?? fallbackLocation,
+        interactiveFlags: InteractiveFlag.drag |
+            InteractiveFlag.pinchMove |
+            InteractiveFlag.pinchZoom |
+            InteractiveFlag.doubleTapZoom,
+      ),
       children: [
         if (mapProvider == MapProvider.openStreetMap ||
             (mapProvider == MapProvider.googleMap &&
@@ -96,35 +96,49 @@ class _PlaceConfirmSheetViewState extends State<PlaceConfirmSheetView> {
           alignment: Alignment.bottomCenter,
           child: SafeArea(
             minimum: const EdgeInsets.all(16),
-            child: SizedBox(
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.06,
               width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: address == null
-                      ? null
-                      : () {
-                          final newLocation = FullLocation(
-                              latlng: mapController.center,
-                              address: address!,
-                              title: widget.defaultLocation?.title ?? "");
-                          // final box =
-                          //     Hive.box<List<LocationHistoryItem>>(
-                          //         "history2");
-                          // var items = (box.get("items",
-                          //         defaultValue:
-                          //             List<LocationHistoryItem>.from(
-                          //                 []))
-                          //     as List<LocationHistoryItem>);
-                          // if (items.length > 9) {
-                          //   items.removeRange(9, items.length - 1);
-                          // }
-                          // items = [
-                          //   newLocation.toLocationHistoryItem()
-                          // ].followedBy(items).toList();
-                          // box.put("items", items);
+              decoration: BoxDecoration(
+                color: Color(0xffF4D206),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: GestureDetector(
+                onTap: address == null
+                    ? null
+                    : () {
+                        final newLocation = FullLocation(
+                            latlng: mapController.center,
+                            address: address!,
+                            title: widget.defaultLocation?.title ?? "");
+                        // final box =
+                        //     Hive.box<List<LocationHistoryItem>>(
+                        //         "history2");
+                        // var items = (box.get("items",
+                        //         defaultValue:
+                        //             List<LocationHistoryItem>.from(
+                        //                 []))
+                        //     as List<LocationHistoryItem>);
+                        // if (items.length > 9) {
+                        //   items.removeRange(9, items.length - 1);
+                        // }
+                        // items = [
+                        //   newLocation.toLocationHistoryItem()
+                        // ].followedBy(items).toList();
+                        // box.put("items", items);
 
-                          Navigator.of(context).pop(newLocation);
-                        },
-                  child: const Text("Confirm location")),
+                        Navigator.of(context).pop(newLocation);
+                      },
+                child: Center(
+                  child: const Text(
+                    "Confirm pick up location",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         )

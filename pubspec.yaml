@@ -57,6 +57,7 @@ dependencies:
   flutter_onboarding_slider: ^1.0.7
   url_launcher: ^6.1.4
   velocity_x: ^3.5.1
+  lottie: ^1.4.3
   client_shared:
     path: ../../libs/client-shared
 

@@ -13,12 +13,15 @@ import 'package:ridy/location_selection/welcome_card/location_history_item.dart'
 import 'package:ridy/login/login_screen.dart';
 import 'package:ridy/login/login_verification_screen.dart';
 import 'package:ridy/login/privacy_policy_screen.dart';
+import 'package:ridy/login/profile_update_screen.dart';
 import 'package:ridy/main/bloc/jwt_cubit.dart';
 import 'package:ridy/main/bloc/rider_profile_cubit.dart';
+import 'package:ridy/main/logout_screen.dart';
 import 'package:ridy/onboarding/pageview_cubit.dart';
 import 'address/address_list_view.dart';
 import 'announcements/announcements_list_view.dart';
 import 'history/trip_history_list_view.dart';
+import 'main/favourite_location.dart';
 import 'onboarding/onboarding_screen.dart';
 import 'login/profile_screen.dart';
 import 'main/bloc/current_location_cubit.dart';
@@ -84,11 +87,14 @@ class MyApp extends StatelessWidget {
             'loginScreen': (context) => LoginScreen(),
             'announcements': (context) => const AnnouncementsListView(),
             'history': (context) => const TripHistoryListView(),
+            'favouriteLocation': (context) => const FavouriteLocation(),
             'wallet': (context) => const WalletView(),
+            'logoutScreen': (context) => const LogoutScreen(),
             'onBoardingScreen': (context) => OnBoardingScreen(),
             'chat': (context) => const ChatView(),
             'reserves': (context) => const ReservationListView(),
             'profileScreen': (context) => ProfileScreen(),
+            'profileUpdateScreen': (context) => ProfileUpdateScreen(),
             'profile': (context) => BlocProvider.value(
                   value: context.read<RiderProfileCubit>(),
                   child: BlocProvider.value(
