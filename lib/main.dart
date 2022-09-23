@@ -8,9 +8,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lifecycle/lifecycle.dart';
 import 'package:ridy/chat/chat_view.dart';
+import 'package:ridy/location_selection/location_selection_parent_view.dart';
 import 'package:ridy/location_selection/welcome_card/location_history_item.dart';
 import 'package:ridy/login/login_screen.dart';
-import 'package:ridy/login/login_verification_code_view.dart';
 import 'package:ridy/login/login_verification_screen.dart';
 import 'package:ridy/login/privacy_policy_screen.dart';
 import 'package:ridy/main/bloc/jwt_cubit.dart';
@@ -53,8 +53,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
-  ///======================================///
 
   @override
   Widget build(BuildContext context) {
