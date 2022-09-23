@@ -35,7 +35,7 @@ class DrawerLoggedIn extends StatelessWidget {
             children: [
               UserAvatarView(
                 urlPrefix: serverUrl,
-                url: rider.media?.address,
+                url: rider.media?.address ?? "",
                 cornerRadius: 10,
                 size: 50,
                 backgroundColor: CustomTheme.primaryColors.shade300,

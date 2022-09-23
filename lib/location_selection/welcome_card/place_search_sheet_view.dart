@@ -69,17 +69,20 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(children: [
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.close),
-            splashRadius: 20,
-          )
-        ]),
+        Row(
+          children: [
+            IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.close),
+              splashRadius: 20,
+            )
+          ],
+        ),
         Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: CustomTheme.neutralColors.shade100),
+            borderRadius: BorderRadius.circular(10),
+            color: Color(0xffECF4F0),
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -87,16 +90,17 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
                   children: selectedLocations.mapIndexed((e, index) {
                 return Column(
                   children: [
-                    Icon(
-                      index == 0
-                          ? Ionicons.navigate
-                          : (index == selectedLocations.length - 1
-                              ? Ionicons.location
-                              : Ionicons.flag),
-                      color: index == selectedLocations.length - 1
-                          ? CustomTheme.primaryColors
-                          : CustomTheme.neutralColors,
-                    ).p4(),
+                    index == 0
+                        ? Icon(
+                            Ionicons.navigate,
+                            color: CustomTheme.neutralColors,
+                          ).p4()
+                        : index == selectedLocations.length - 1
+                            ? Image.asset("images/tuktuk_marker.png")
+                            : Icon(
+                                Ionicons.flag,
+                                color: CustomTheme.primaryColors,
+                              ),
                     if (index != selectedLocations.length - 1)
                       const DottedLine(
                         direction: Axis.vertical,
@@ -201,21 +205,20 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
                                     }
                                   },
                                   decoration: noBorderInputDecoration.copyWith(
-                                      hintText: index == 0
-                                          ? "Current Location"
-                                          : (index <
-                                                  selectedLocations.length - 1
-                                              ? "Add Stop"
-                                              : "Your destination"),
-                                      hintStyle: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                              color: index ==
-                                                      selectedLocations.length -
-                                                          1
-                                                  ? CustomTheme.primaryColors
-                                                  : CustomTheme.neutralColors)),
+                                    hintText: index == 0
+                                        ? "Current Location"
+                                        : (index < selectedLocations.length - 1
+                                            ? "Add Stop"
+                                            : "Your destination"),
+                                    hintStyle: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                            color: index ==
+                                                    selectedLocations.length - 1
+                                                ? Color(0xff3B7B3F)
+                                                : CustomTheme.neutralColors),
+                                  ),
                                 ),
                               ),
                               if (index == selectedLocations.length - 1 &&
@@ -286,7 +289,7 @@ class _PlaceSearchSheetViewChildState extends State<PlaceSearchSheetViewChild> {
                   spreadRadius: -1,
                   offset: const Offset(0, -3)),
               const BoxShadow(
-                  color: Color(0xfff2f5fa), blurRadius: 10, spreadRadius: 5),
+                  color: Color(0xffF0F8F4), blurRadius: 10, spreadRadius: 5),
             ]),
             child: Center(
               child: CupertinoButton(
@@ -445,9 +448,8 @@ class LocationSearchResultItem extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                isHistory ? Ionicons.time : Ionicons.compass,
-                color: CustomTheme.neutralColors.shade400,
+              Image.asset(
+                "images/marker_logo.png",
               ),
               Expanded(
                 child: Column(
