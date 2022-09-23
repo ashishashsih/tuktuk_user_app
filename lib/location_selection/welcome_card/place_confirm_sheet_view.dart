@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math';
+
 import 'package:client_shared/config.dart';
 import 'package:client_shared/map_providers.dart';
 import 'package:flutter/material.dart';
@@ -33,28 +33,25 @@ class _PlaceConfirmSheetViewState extends State<PlaceConfirmSheetView> {
     address ??= widget.defaultLocation?.address;
     mapController.onReady.then((value) {
       center = mapController.center;
-      subscription = mapController.mapEventStream.listen(
-        (MapEvent mapEvent) async {
-          if (mapEvent is MapEventMoveStart) {
-            setState(() {
-              address = null;
-            });
-          } else if (mapEvent is MapEventMoveEnd) {
-            final reverseSearchResult = await Nominatim.reverseSearch(
-                lat: mapController.center.latitude,
-                lon: mapController.center.longitude,
-                nameDetails: true);
-            final fullLocation = reverseSearchResult.convertToFullLocation();
-            center = mapController.center;
-            if (!mounted) return;
-            setState(
-              () {
-                address = fullLocation.address;
-              },
-            );
-          }
-        },
-      );
+      subscription =
+          mapController.mapEventStream.listen((MapEvent mapEvent) async {
+        if (mapEvent is MapEventMoveStart) {
+          setState(() {
+            address = null;
+          });
+        } else if (mapEvent is MapEventMoveEnd) {
+          final reverseSearchResult = await Nominatim.reverseSearch(
+              lat: mapController.center.latitude,
+              lon: mapController.center.longitude,
+              nameDetails: true);
+          final fullLocation = reverseSearchResult.convertToFullLocation();
+          center = mapController.center;
+          if (!mounted) return;
+          setState(() {
+            address = fullLocation.address;
+          });
+        }
+      });
     });
     super.initState();
   }
@@ -64,14 +61,13 @@ class _PlaceConfirmSheetViewState extends State<PlaceConfirmSheetView> {
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
-        maxZoom: 20,
-        zoom: 16,
-        center: widget.defaultLocation?.latlng ?? fallbackLocation,
-        interactiveFlags: InteractiveFlag.drag |
-            InteractiveFlag.pinchMove |
-            InteractiveFlag.pinchZoom |
-            InteractiveFlag.doubleTapZoom,
-      ),
+          maxZoom: 20,
+          zoom: 16,
+          center: widget.defaultLocation?.latlng ?? fallbackLocation,
+          interactiveFlags: InteractiveFlag.drag |
+              InteractiveFlag.pinchMove |
+              InteractiveFlag.pinchZoom |
+              InteractiveFlag.doubleTapZoom),
       children: [
         if (mapProvider == MapProvider.openStreetMap ||
             (mapProvider == MapProvider.googleMap &&
@@ -88,8 +84,7 @@ class _PlaceConfirmSheetViewState extends State<PlaceConfirmSheetView> {
         LocationMarkerLayerWidget(
           options: LocationMarkerLayerOptions(),
           plugin: const LocationMarkerPlugin(
-            centerOnLocationUpdate: CenterOnLocationUpdate.never,
-          ),
+              centerOnLocationUpdate: CenterOnLocationUpdate.never),
         ),
         Center(
           child: Padding(
@@ -101,49 +96,35 @@ class _PlaceConfirmSheetViewState extends State<PlaceConfirmSheetView> {
           alignment: Alignment.bottomCenter,
           child: SafeArea(
             minimum: const EdgeInsets.all(16),
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.06,
+            child: SizedBox(
               width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.yellow,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: GestureDetector(
-                onTap: address == null
-                    ? null
-                    : () {
-                        final newLocation = FullLocation(
-                            latlng: mapController.center,
-                            address: address!,
-                            title: widget.defaultLocation?.title ?? "");
-                        // final box =
-                        //     Hive.box<List<LocationHistoryItem>>(
-                        //         "history2");
-                        // var items = (box.get("items",
-                        //         defaultValue:
-                        //             List<LocationHistoryItem>.from(
-                        //                 []))
-                        //     as List<LocationHistoryItem>);
-                        // if (items.length > 9) {
-                        //   items.removeRange(9, items.length - 1);
-                        // }
-                        // items = [
-                        //   newLocation.toLocationHistoryItem()
-                        // ].followedBy(items).toList();
-                        // box.put("items", items);
+              child: ElevatedButton(
+                  onPressed: address == null
+                      ? null
+                      : () {
+                          final newLocation = FullLocation(
+                              latlng: mapController.center,
+                              address: address!,
+                              title: widget.defaultLocation?.title ?? "");
+                          // final box =
+                          //     Hive.box<List<LocationHistoryItem>>(
+                          //         "history2");
+                          // var items = (box.get("items",
+                          //         defaultValue:
+                          //             List<LocationHistoryItem>.from(
+                          //                 []))
+                          //     as List<LocationHistoryItem>);
+                          // if (items.length > 9) {
+                          //   items.removeRange(9, items.length - 1);
+                          // }
+                          // items = [
+                          //   newLocation.toLocationHistoryItem()
+                          // ].followedBy(items).toList();
+                          // box.put("items", items);
 
-                        Navigator.of(context).pop(newLocation);
-                      },
-                child: Center(
-                  child: const Text(
-                    "Confirm pick up location",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
+                          Navigator.of(context).pop(newLocation);
+                        },
+                  child: const Text("Confirm location")),
             ),
           ),
         )
