@@ -60,7 +60,9 @@ class DrawerView extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            onTap: () async {},
+            onTap: () async {
+              Navigator.of(context).pushNamed("notificationScreen");
+            },
           ),
           ListTile(
             iconColor: CustomTheme.primaryColors.shade800,
@@ -113,7 +115,9 @@ class DrawerView extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            onTap: () async {},
+            onTap: () async {
+              Navigator.pushNamed(context, "rideHistory");
+            },
           ),
           ListTile(
             iconColor: CustomTheme.primaryColors.shade800,

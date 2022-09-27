@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'dart:async';
 import 'package:client_shared/config.dart';
 import 'package:client_shared/map_providers.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +10,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:lifecycle/lifecycle.dart';
+import 'package:lottie/lottie.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:ridy/location_selection/reservation_messages/looking_sheet_view.dart';
@@ -26,8 +26,6 @@ import 'package:ridy/main/rate_ride_sheet_view.dart';
 import 'package:client_shared/theme/theme.dart';
 import '../graphql/generated/graphql_api.graphql.dart';
 import '../main/bloc/main_bloc.dart';
-import '../main/drawer_logged_in.dart';
-import '../main/drawer_logged_out.dart';
 import '../main/order_status_sheet_view.dart';
 import '../main/service_selection_card_view.dart';
 import 'welcome_card/welcome_card_view.dart';
@@ -35,9 +33,8 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 
-// ignore: must_be_immutable
 class LocationSelectionParentView extends StatefulWidget {
-  LocationSelectionParentView({Key? key}) : super(key: key);
+  const LocationSelectionParentView({Key? key}) : super(key: key);
 
   @override
   State<LocationSelectionParentView> createState() =>
@@ -51,12 +48,533 @@ class _LocationSelectionParentViewState
   TextEditingController textEditingController = TextEditingController();
 
   Refetch? refetch;
-
   MapController? controller;
 
   int? isSelected;
   bool? selected;
-  bool isCheckBox = false;
+  bool isSwitch = false;
+  bool isPaySwitch = false;
+  bool hideBottomSheet = true;
+
+  Future bottomSheet() async {
+    await Future.delayed(
+      const Duration(seconds: 2),
+      () {
+        Navigator.pop(context);
+        showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return StatefulBuilder(
+              builder: (context, setState) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Container(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text(
+                            "Payment Method",
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Text(
+                            "Select your payment method",
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Color(0xff979797),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          const Text(
+                            "TukTuk Pay",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            children: [
+                              Image.asset(
+                                "images/marker_logo.png",
+                                scale: 0.5,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    "TukTuk Pay",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    "0.00 Rs",
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Color(0xff979797),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Spacer(),
+                              CupertinoSwitch(
+                                value: isPaySwitch,
+                                onChanged: (val) {
+                                  setState(() {
+                                    isPaySwitch = val;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                          const Text(
+                            "Payment method",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            children: const [
+                              Icon(
+                                Icons.currency_rupee,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Cash",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            const Text(
+                                              "Add Payment Method",
+                                              style: TextStyle(
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const Text(
+                                              "Select your payment method",
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Color(0xff979797),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 15,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return SingleChildScrollView(
+                                                      child: AnimatedPadding(
+                                                        padding: MediaQuery.of(
+                                                                context)
+                                                            .viewInsets,
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    100),
+                                                        curve:
+                                                            Curves.decelerate,
+                                                        child: Container(
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        15),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Text(
+                                                                      "Paytm",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            20,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        fontFamily:
+                                                                            "google_fonts/DaysOne-Regular.ttf",
+                                                                      ),
+                                                                    ),
+                                                                    GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                      child:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .close,
+                                                                        size:
+                                                                            30,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                Text(
+                                                                  "Type your paytm code",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        16,
+                                                                    color: Color(
+                                                                        0xff9A9A9A),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 30,
+                                                                ),
+                                                                Container(
+                                                                  height: 50,
+                                                                  color: Color(
+                                                                      0xffECF4F0),
+                                                                  child:
+                                                                      TextFormField(
+                                                                    controller:
+                                                                        textEditingController,
+                                                                    keyboardType:
+                                                                        TextInputType
+                                                                            .text,
+                                                                    decoration:
+                                                                        const InputDecoration(
+                                                                      border:
+                                                                          OutlineInputBorder(
+                                                                        borderSide:
+                                                                            BorderSide.none,
+                                                                      ),
+                                                                      disabledBorder:
+                                                                          OutlineInputBorder(
+                                                                        borderSide:
+                                                                            BorderSide.none,
+                                                                      ),
+                                                                      enabledBorder:
+                                                                          OutlineInputBorder(
+                                                                        borderSide:
+                                                                            BorderSide.none,
+                                                                      ),
+                                                                      focusedBorder:
+                                                                          OutlineInputBorder(
+                                                                        borderSide:
+                                                                            BorderSide.none,
+                                                                      ),
+                                                                      fillColor:
+                                                                          Color(
+                                                                              0xffECF4F0),
+                                                                      filled:
+                                                                          true,
+                                                                      isDense:
+                                                                          true,
+                                                                      hintText:
+                                                                          "Enter eight digit code",
+                                                                      helperStyle:
+                                                                          TextStyle(
+                                                                        color: Color(
+                                                                            0xffACACAC),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 20,
+                                                                ),
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    if (textEditingController
+                                                                        .text
+                                                                        .isNotEmpty) {}
+                                                                  },
+                                                                  child:
+                                                                      Container(
+                                                                    height: MediaQuery.of(context)
+                                                                            .size
+                                                                            .height *
+                                                                        0.06,
+                                                                    width: double
+                                                                        .infinity,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: Colors
+                                                                          .yellow,
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              30),
+                                                                    ),
+                                                                    child:
+                                                                        Center(
+                                                                      child:
+                                                                          Text(
+                                                                        "Done",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              16,
+                                                                          color: textEditingController.text.isNotEmpty
+                                                                              ? Colors.black
+                                                                              : Colors.black.withOpacity(0.5),
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 30,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "Paytm",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  Icon(
+                                                    Icons.arrow_forward_ios,
+                                                    color: Color(0xff979797),
+                                                    size: 15,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 15,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Google Pay",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  color: Color(0xff979797),
+                                                  size: 15,
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 15,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Credit or debit card",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  color: Color(0xff979797),
+                                                  size: 15,
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 15,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: const [
+                                                Text(
+                                                  "Amazon pay",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  color: Color(0xff979797),
+                                                  size: 15,
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: const [
+                                                Text(
+                                                  "PhonePe",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  color: Color(0xff979797),
+                                                  size: 15,
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 30,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Row(
+                              children: const [
+                                Icon(
+                                  Icons.add,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "Add payment method",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          const Text(
+                            "Vouchers",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            children: const [
+                              Icon(
+                                Icons.add,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Add vouchers",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,11 +656,14 @@ class _LocationSelectionParentViewState
           return Stack(children: [
             if (state is OrderPreview)
               SmallBackFloatingActionButton(
-                onPressed: () => context.read<MainBloc>().add(
-                      ResetState(),
-                    ),
+                onPressed: () {
+                  context.read<MainBloc>().add(ResetState());
+                  setState(() {
+                    hideBottomSheet = true;
+                  });
+                },
               ),
-            if (state is OrderPreview)
+            if (state is OrderPreview && hideBottomSheet == true)
               Positioned(
                 bottom: 0,
                 child: Container(
@@ -270,10 +791,10 @@ class _LocationSelectionParentViewState
                                       ),
                                     ),
                                     CupertinoSwitch(
-                                      value: isCheckBox,
+                                      value: isSwitch,
                                       onChanged: (val) {
                                         setState(() {
-                                          isCheckBox = val;
+                                          isSwitch = val;
                                         });
                                       },
                                     ),
@@ -351,7 +872,7 @@ class _LocationSelectionParentViewState
                                                       keyboardType:
                                                           TextInputType.text,
                                                       decoration:
-                                                          InputDecoration(
+                                                          const InputDecoration(
                                                         border:
                                                             OutlineInputBorder(
                                                           borderSide:
@@ -388,7 +909,7 @@ class _LocationSelectionParentViewState
                                                 ],
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 20,
                                             ),
                                             GestureDetector(
@@ -466,7 +987,181 @@ class _LocationSelectionParentViewState
                         ),
                         GestureDetector(
                           onTap: () {
-                            if (selected == true) {}
+                            if (selected == true) {
+                              setState(() {
+                                hideBottomSheet = false;
+                              });
+                              showModalBottomSheet(
+                                isDismissible: false,
+                                context: context,
+                                builder: (context) {
+                                  return SingleChildScrollView(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  "Ride Requested",
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                Lottie.asset(
+                                                  "images/loading.json",
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.3,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.07,
+                                                ),
+                                                Image.asset(
+                                                  "images/Auto_Designed.png",
+                                                ),
+                                              ],
+                                            ),
+                                            Text(
+                                              "We are looking for nearest TukTuk for you.",
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.normal,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                                showModalBottomSheet(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Container(
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      20),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 20,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  Text(
+                                                                    "Ride Avaliable",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          20,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                  Spacer(),
+                                                                  Image.asset(
+                                                                    "images/Auto_Designed.png",
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Text(
+                                                                "We are looking for nearest TukTuk for you.",
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 11,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .normal,
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 20,
+                                                              ),
+                                                              Center(
+                                                                child: Icon(
+                                                                  Icons.done,
+                                                                  size: 30,
+                                                                  color: Colors
+                                                                      .black,
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 30,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                                bottomSheet();
+                                              },
+                                              child: Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.06,
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.yellow,
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Cancel",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: selected == true
+                                                          ? Colors.black
+                                                          : Colors.black
+                                                              .withOpacity(0.5),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
                           },
                           child: Container(
                             height: MediaQuery.of(context).size.height * 0.06,
