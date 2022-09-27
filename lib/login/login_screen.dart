@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:ridy/generated/l10n.dart';
-import 'package:ridy/login/login_verification_code_view.dart';
 import 'package:ridy/login/login_verification_screen.dart';
 import 'package:ridy/main/bloc/jwt_cubit.dart';
 import '../graphql/generated/graphql_api.graphql.dart';

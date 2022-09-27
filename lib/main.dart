@@ -15,13 +15,17 @@ import 'package:ridy/login/login_verification_screen.dart';
 import 'package:ridy/login/privacy_policy_screen.dart';
 import 'package:ridy/login/profile_update_screen.dart';
 import 'package:ridy/main/bloc/jwt_cubit.dart';
+import 'package:ridy/main/bloc/notification_evnt.dart';
+import 'package:ridy/main/bloc/ride_history_event.dart';
 import 'package:ridy/main/bloc/rider_profile_cubit.dart';
 import 'package:ridy/main/logout_screen.dart';
+import 'package:ridy/main/ride_history.dart';
 import 'package:ridy/onboarding/pageview_cubit.dart';
 import 'address/address_list_view.dart';
 import 'announcements/announcements_list_view.dart';
 import 'history/trip_history_list_view.dart';
 import 'main/favourite_location.dart';
+import 'main/notification_screen.dart';
 import 'onboarding/onboarding_screen.dart';
 import 'login/profile_screen.dart';
 import 'main/bloc/current_location_cubit.dart';
@@ -66,6 +70,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => RiderProfileCubit()),
         BlocProvider(create: (context) => JWTCubit()),
         BlocProvider(create: (context) => PageViewCubit()),
+        BlocProvider(create: (context) => NavigationCubit()),
+        BlocProvider(create: (context) => RideHistoryCubit()),
       ],
       child: MyGraphqlProvider(
         child: MaterialApp(
@@ -89,7 +95,9 @@ class MyApp extends StatelessWidget {
             'history': (context) => const TripHistoryListView(),
             'favouriteLocation': (context) => const FavouriteLocation(),
             'wallet': (context) => const WalletView(),
+            'rideHistory': (context) => RideHistory(),
             'logoutScreen': (context) => const LogoutScreen(),
+            'notificationScreen': (context) => NotificationScreen(),
             'onBoardingScreen': (context) => OnBoardingScreen(),
             'chat': (context) => const ChatView(),
             'reserves': (context) => const ReservationListView(),
@@ -105,7 +113,7 @@ class MyApp extends StatelessWidget {
           },
           theme: CustomTheme.theme1,
           // home: ProfileScreen(),
-          home: LocationSelectionParentView(),
+          home: PrivacyPolicyScreen(),
         ),
       ),
     );

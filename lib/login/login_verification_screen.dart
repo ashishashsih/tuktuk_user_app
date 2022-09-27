@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -220,6 +222,7 @@ class _LogInVerificationScreenState extends State<LogInVerificationScreen> {
     final String firebaseToken = await cr.user!.getIdToken();
     final QueryResult qe =
         await runMutation({"firebaseToken": firebaseToken}).networkResult!;
+    log("======qe========$qe");
     final String jwt = Login$Mutation.fromJson(qe.data!).login.jwtToken;
     final Box box = await Hive.openBox('user');
     box.put("jwt", jwt);

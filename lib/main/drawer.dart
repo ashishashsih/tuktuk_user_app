@@ -1,5 +1,6 @@
 import 'package:client_shared/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:ridy/history/trip_history_list_view.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class DrawerView extends StatelessWidget {
@@ -60,7 +61,9 @@ class DrawerView extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            onTap: () async {},
+            onTap: () async {
+              Navigator.of(context).pushNamed("notificationScreen");
+            },
           ),
           ListTile(
             iconColor: CustomTheme.primaryColors.shade800,
@@ -113,7 +116,9 @@ class DrawerView extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            onTap: () async {},
+            onTap: () async {
+              Navigator.pushNamed(context, "rideHistory");
+            },
           ),
           ListTile(
             iconColor: CustomTheme.primaryColors.shade800,

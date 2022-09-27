@@ -65,7 +65,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.ridy.taxi.rider</string>
+			<string>taxi.tuktuk.rider</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>riderapppayment</string>

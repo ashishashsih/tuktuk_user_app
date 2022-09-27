@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:ridy/location_selection/welcome_card/favorite_place_search_sheet.dart';
 import 'package:ridy/main/bloc/current_location_cubit.dart';
-
-import '../location_selection/welcome_card/place_confirm_sheet_view.dart';
 import '../location_selection/welcome_card/place_search_sheet_view.dart';
 
 class FavouriteLocation extends StatelessWidget {

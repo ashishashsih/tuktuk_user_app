@@ -11,8 +11,8 @@
     "related_applications": [
       {
         "platform": "play",
-        "url": "https://play.google.com/store/apps/details?id=com.ridy.taxi.rider",
-        "id": "com.ridy.taxi.rider"
+        "url": "https://play.google.com/store/apps/details?id=taxi.tuktuk.rider",
+        "id": "taxi.tuktuk.rider"
       }, {
         "platform": "itunes",
         "url": "https://apps.apple.com/us/app/ridy-flutter/id1592809954"

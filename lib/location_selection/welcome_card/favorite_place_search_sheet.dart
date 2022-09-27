@@ -71,8 +71,13 @@ class _FavoritePlaceConfirmSheetViewState
           ),
           Row(
             children: [
-              Icon(
-                Icons.arrow_back_ios_rounded,
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Icon(
+                  Icons.arrow_back_ios_rounded,
+                ),
               ),
               Text(
                 "Back",
