@@ -113,7 +113,7 @@ class MyApp extends StatelessWidget {
           },
           theme: CustomTheme.theme1,
           // home: ProfileScreen(),
-          home: LocationSelectionParentView(),
+          home: PrivacyPolicyScreen(),
         ),
       ),
     );
