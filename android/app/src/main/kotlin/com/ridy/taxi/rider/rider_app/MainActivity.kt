@@ -1,4 +1,4 @@
-package com.ridy.taxi.rider.rider_app
+package taxi.tutuk.rider
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

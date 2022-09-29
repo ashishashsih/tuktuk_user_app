@@ -1,6 +1,6 @@
 import 'package:client_shared/config.dart';
 
-String serverUrl = "http://$serverIP:4000/";
+String serverUrl = "http://$serverIP:4003/";
 String wsUrl = serverUrl.replaceFirst("http", "ws");
 
 // Nominatim configuration (Only for Open Street Maps and MapBox)
