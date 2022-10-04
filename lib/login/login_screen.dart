@@ -143,11 +143,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                       final UserCredential cr =
                                           await FirebaseAuth.instance
                                               .signInWithCredential(credential);
+
                                       final String firebaseToken =
                                           await cr.user!.getIdToken();
+
                                       final QueryResult qe = await runMutation(
                                               {"firebaseToken": firebaseToken})
                                           .networkResult!;
+
                                       final String jwt =
                                           Login$Mutation.fromJson(qe.data!)
                                               .login
