@@ -47,38 +47,45 @@ class _SelectServiceViewState extends State<SelectServiceView> {
           //     )),
           Row(children: [
             Expanded(
-                child: ElevatedButton(
-              onPressed: mainBloc.selectedService == null
-                  ? null
-                  : () async {
-                      widget.onServiceSelect(
-                          mainBloc.selectedService.toString(), 0);
-                    },
-              child: Text(S.of(context).service_selection_book_now),
-            )),
-            const SizedBox(width: 10),
-            ElevatedButton(
-                style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(vertical: 10))),
-                onPressed: mainBloc.selectedService == null
+              child: GestureDetector(
+                onTap: mainBloc.selectedService == null
                     ? null
                     : () async {
-                        final dialogResult =
-                            await showModalBottomSheet<DateTime>(
-                                context: context,
-                                builder: (context) =>
-                                    const ReserveRideSheetView());
-                        if (dialogResult == null) return;
-                        final difference =
-                            dialogResult.difference(DateTime.now()).inMinutes;
                         widget.onServiceSelect(
-                            mainBloc.selectedService!.id, difference);
+                            mainBloc.selectedService.toString(), 0);
                       },
-                child: const Icon(
-                  Ionicons.calendar,
-                  size: 28,
-                ).pOnly(bottom: 4)),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.yellow,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(S.of(context).service_selection_book_now),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            GestureDetector(
+              onTap: mainBloc.selectedService == null
+                  ? null
+                  : () async {
+                      final dialogResult = await showModalBottomSheet<DateTime>(
+                          context: context,
+                          builder: (context) => const ReserveRideSheetView());
+                      if (dialogResult == null) return;
+                      final difference =
+                          dialogResult.difference(DateTime.now()).inMinutes;
+                      widget.onServiceSelect(
+                          mainBloc.selectedService!.id, difference);
+                    },
+              child: const Icon(
+                Ionicons.calendar,
+                size: 28,
+              ).pOnly(bottom: 4),
+            ),
           ]).pOnly(top: 10)
         ],
       ),
@@ -105,7 +112,7 @@ class OrderPreviewServices extends StatelessWidget {
           TabBar(
               isScrollable: true,
               indicator: BoxDecoration(
-                color: CustomTheme.primaryColors.shade300,
+                color: CustomTheme.secondaryColors.shade300,
                 borderRadius: BorderRadius.circular(24),
               ),
               unselectedLabelColor: CustomTheme.neutralColors,
@@ -126,14 +133,16 @@ class OrderPreviewServices extends StatelessWidget {
                 return ListView(
                   padding: EdgeInsets.zero,
                   children: e.services
-                      .map((e) => ServiceItemView(
-                            service: e,
-                            isSelected: e.id ==
-                                (mainBloc.state as OrderPreview)
-                                    .selectedService
-                                    ?.id,
-                            currency: currency,
-                          ))
+                      .map(
+                        (e) => ServiceItemView(
+                          service: e,
+                          isSelected: e.id ==
+                              (mainBloc.state as OrderPreview)
+                                  .selectedService
+                                  ?.id,
+                          currency: currency,
+                        ),
+                      )
                       .toList(),
                 );
               }).toList(),
@@ -188,11 +197,14 @@ class OrderPreviewServices extends StatelessWidget {
                         });
                     if (code.isEmptyOrNull) return;
 
-                    bloc.add(ShowPreview(
+                    bloc.add(
+                      ShowPreview(
                         points: (bloc.state as OrderPreview).points,
                         selectedOptions:
                             (bloc.state as OrderPreview).selectedOptions,
-                        couponCode: code));
+                        couponCode: code,
+                      ),
+                    );
                   })
             ],
           ).pSymmetric(v: 4)

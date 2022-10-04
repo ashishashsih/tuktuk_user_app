@@ -37,22 +37,38 @@ class _EnterCouponCodeSheetViewState extends State<EnterCouponCodeSheetView> {
               onChanged: (value) => setState(() {
                 code = value;
               }),
-              decoration: const InputDecoration(
-                  isDense: true,
-                  prefixIcon: Icon(Ionicons.pricetag),
-                  hintText: "Enter coupon code"),
+              decoration: InputDecoration(
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                disabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                filled: true,
+                fillColor: Colors.orange.withOpacity(0.2),
+                isDense: true,
+                prefixIcon: Icon(
+                  Ionicons.pricetag,
+                  color: Colors.orange,
+                ),
+                hintText: "Enter coupon code",
+              ),
             ),
             const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
-                    child: ElevatedButton(
-                        onPressed: code.isEmpty
-                            ? null
-                            : () {
-                                Navigator.pop(context, code);
-                              },
-                        child: const Text("Apply"))),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.yellow),
+                    onPressed: code.isEmpty
+                        ? null
+                        : () {
+                            Navigator.pop(context, code);
+                          },
+                    child: const Text(
+                      "Apply",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
               ],
             )
           ],

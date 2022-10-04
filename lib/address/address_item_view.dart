@@ -78,12 +78,11 @@ class AddressListIcon extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-          color: CustomTheme.neutralColors.shade200,
-          borderRadius: BorderRadius.circular(10)),
+          color: Color(0xffECF4F0), borderRadius: BorderRadius.circular(10)),
       child: Icon(
         iconData,
         size: 28,
-        color: CustomTheme.neutralColors.shade600,
+        color: Colors.green,
       ),
     );
   }

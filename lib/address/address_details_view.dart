@@ -118,9 +118,15 @@ class _AddressDetailsViewState extends State<AddressDetailsView> {
                   initialValue: title,
                   onChanged: (value) => title = value,
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(
+                    focusedBorder:
+                        OutlineInputBorder(borderSide: BorderSide.none),
+                    disabledBorder:
+                        OutlineInputBorder(borderSide: BorderSide.none),
+                    filled: true,
+                    fillColor: Colors.green.withOpacity(0.2),
+                    prefixIcon: Icon(
                       Ionicons.ellipse,
-                      color: CustomTheme.neutralColors,
+                      color: Colors.green,
                       size: 12,
                     ),
                     isDense: true,
@@ -139,7 +145,7 @@ class _AddressDetailsViewState extends State<AddressDetailsView> {
                   value: type,
                   icon: const Icon(
                     Ionicons.chevron_down,
-                    color: CustomTheme.neutralColors,
+                    color: Colors.green,
                   ),
                   validator: (RiderAddressType? type) => (type != null
                       ? null
@@ -147,10 +153,16 @@ class _AddressDetailsViewState extends State<AddressDetailsView> {
                   decoration: InputDecoration(
                     hintText: "Type",
                     hintStyle: Theme.of(context).textTheme.labelLarge,
+                    fillColor: Colors.green.withOpacity(0.2),
+                    filled: true,
                     isDense: true,
+                    focusedBorder:
+                        OutlineInputBorder(borderSide: BorderSide.none),
+                    disabledBorder:
+                        OutlineInputBorder(borderSide: BorderSide.none),
                     prefixIcon: const Icon(
                       Ionicons.ellipse,
-                      color: CustomTheme.neutralColors,
+                      color: Colors.green,
                       size: 12,
                     ),
                   ),
@@ -177,13 +189,15 @@ class _AddressDetailsViewState extends State<AddressDetailsView> {
             child: Container(
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                        color: CustomTheme.neutralColors.shade200,
-                        blurRadius: 5,
-                        spreadRadius: 1)
-                  ]),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: CustomTheme.neutralColors.shade200,
+                    blurRadius: 5,
+                    spreadRadius: 1,
+                  )
+                ],
+              ),
               constraints: const BoxConstraints(minHeight: 100, maxHeight: 350),
               child: FlutterMap(
                 mapController: mapController,
@@ -245,28 +259,39 @@ class _AddressDetailsViewState extends State<AddressDetailsView> {
                 ) {
                   return SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: (details == null || title.isEmpty)
-                            ? null
-                            : () async {
-                                if (_formKey.currentState!.validate()) {
-                                  final args = CreateAddressArguments(
-                                          input: CreateRiderAddressInput(
-                                              title: title,
-                                              details: details!,
-                                              type: type,
-                                              location: PointInput(
-                                                  lat: mapController
-                                                      .center.latitude,
-                                                  lng: mapController
-                                                      .center.longitude)))
-                                      .toJson();
-                                  await runMutation(args).networkResult;
-                                  if (!mounted) return;
-                                  Navigator.pop(context);
-                                }
-                              },
-                        child: Text(S.of(context).action_save)),
+                    child: GestureDetector(
+                      onTap: (details == null || title.isEmpty)
+                          ? null
+                          : () async {
+                              if (_formKey.currentState!.validate()) {
+                                final args = CreateAddressArguments(
+                                  input: CreateRiderAddressInput(
+                                    title: title,
+                                    details: details!,
+                                    type: type,
+                                    location: PointInput(
+                                      lat: mapController.center.latitude,
+                                      lng: mapController.center.longitude,
+                                    ),
+                                  ),
+                                ).toJson();
+                                await runMutation(args).networkResult;
+                                if (!mounted) return;
+                                Navigator.pop(context);
+                              }
+                            },
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(S.of(context).action_save),
+                        ),
+                      ),
+                    ),
                   );
                 }),
           if (widget.address != null)

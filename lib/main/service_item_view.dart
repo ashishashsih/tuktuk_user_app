@@ -4,9 +4,7 @@ import '../config.dart';
 import '../graphql/generated/graphql_api.graphql.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
-
 import 'package:client_shared/theme/theme.dart';
-
 import 'bloc/main_bloc.dart';
 
 class ServiceItemView extends StatelessWidget {
@@ -30,10 +28,9 @@ class ServiceItemView extends StatelessWidget {
         duration: const Duration(milliseconds: 250),
         padding: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: isSelected
-                ? CustomTheme.primaryColors.shade100
-                : CustomTheme.primaryColors.shade50),
+          borderRadius: BorderRadius.circular(8),
+          color: isSelected ? Colors.orange.shade100 : Colors.orange.shade50,
+        ),
         child: Row(
           children: [
             Image.network(

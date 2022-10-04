@@ -123,43 +123,26 @@ class WelcomeCardView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    AddressListAddLocationButton(onTap: () async {
-                      final currentLocation =
-                          context.read<CurrentLocationCubit>().state;
-                      await showBarModalBottomSheet(
-                        context: context,
-                        builder: (_) {
-                          return BlocProvider.value(
-                              value: BlocProvider.of<CurrentLocationCubit>(
-                                  context),
-                              child: AddressDetailsView(
-                                  currentLocation: currentLocation));
-                        },
-                      );
-                      refetch!();
-                    })
+                    AddressListAddLocationButton(
+                      onTap: () async {
+                        final currentLocation =
+                            context.read<CurrentLocationCubit>().state;
+                        await showBarModalBottomSheet(
+                          context: context,
+                          builder: (_) {
+                            return BlocProvider.value(
+                                value: BlocProvider.of<CurrentLocationCubit>(
+                                    context),
+                                child: AddressDetailsView(
+                                    currentLocation: currentLocation));
+                          },
+                        );
+                        refetch!();
+                      },
+                    )
                   ]);
                 });
           }),
-          Row(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.06,
-                width: MediaQuery.of(context).size.width * 0.14,
-                color: Color(0xffECF4F0),
-                child: Icon(
-                  Icons.add,
-                  color: Colors.green,
-                ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.05,
-              ),
-              Text(
-                "Add Favourite Location",
-              ),
-            ],
-          ),
         ],
       ),
     );

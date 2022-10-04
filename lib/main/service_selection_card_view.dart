@@ -7,7 +7,6 @@ import 'package:ridy/generated/l10n.dart';
 import 'package:ridy/login/login_screen.dart';
 import 'package:ridy/main/reserve_confirmation_sheet_view.dart';
 import '../graphql/generated/graphql_api.graphql.dart';
-import '../login/login_number_view.dart';
 import 'bloc/jwt_cubit.dart';
 import 'bloc/main_bloc.dart';
 import '../main/select_service_view.dart';

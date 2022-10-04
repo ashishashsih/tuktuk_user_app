@@ -21,6 +21,7 @@ import 'package:ridy/main/bloc/rider_profile_cubit.dart';
 import 'package:ridy/main/logout_screen.dart';
 import 'package:ridy/main/ride_history.dart';
 import 'package:ridy/onboarding/pageview_cubit.dart';
+import 'package:ridy/storage/sharedpreference.dart';
 import 'address/address_list_view.dart';
 import 'announcements/announcements_list_view.dart';
 import 'history/trip_history_list_view.dart';
@@ -55,11 +56,30 @@ void main() async {
     }
   }
   await Geolocator.requestPermission();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String? verificationId;
+  bool? onBoarding;
+
+  Future getUser() async {
+    verificationId = await SharedPrefManger.getVerificationId();
+    onBoarding = await SharedPrefManger.getOnBoardingScreen();
+  }
+
+  @override
+  void initState() {
+    getUser();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,8 +132,11 @@ class MyApp extends StatelessWidget {
                 ),
           },
           theme: CustomTheme.theme1,
-          // home: ProfileScreen(),
-          home: PrivacyPolicyScreen(),
+          home: verificationId == null
+              ? PrivacyPolicyScreen()
+              : onBoarding == null
+                  ? ProfileScreen()
+                  : LocationSelectionParentView(),
         ),
       ),
     );

@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ridy/storage/sharedpreference.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class LogoutScreen extends StatelessWidget {
@@ -57,7 +59,9 @@ class LogoutScreen extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).pushNamed("onBoardingScreen");
+                    Navigator.of(context).pushNamed("loginScreen");
+                    FirebaseAuth.instance.signOut();
+                    SharedPrefManger.dataClear();
                   },
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.06,

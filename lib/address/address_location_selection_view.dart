@@ -91,16 +91,30 @@ class _AddressLocationSelectionViewState
           child: Row(
             children: [
               Expanded(
-                child: ElevatedButton(
-                    onPressed: address == null
-                        ? null
-                        : () {
-                            Navigator.of(context).pop(FullLocation(
-                                latlng: mapController.center,
-                                address: address!,
-                                title: widget.defaultLocation?.title ?? ""));
-                          },
-                    child: const Text("Confirm location")),
+                child: GestureDetector(
+                  onTap: address == null
+                      ? null
+                      : () {
+                          Navigator.of(context).pop(
+                            FullLocation(
+                              latlng: mapController.center,
+                              address: address!,
+                              title: widget.defaultLocation?.title ?? "",
+                            ),
+                          );
+                        },
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.06,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Colors.yellow,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: const Text("Confirm location"),
+                    ),
+                  ),
+                ),
               ),
             ],
           ).objectBottomCenter(),

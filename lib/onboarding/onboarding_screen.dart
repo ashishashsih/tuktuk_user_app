@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ridy/onboarding/onboarding_state.dart';
 import 'package:ridy/onboarding/pageview_cubit.dart';
 
+import '../storage/sharedpreference.dart';
+
 class OnBoardingScreen extends StatefulWidget {
   @override
   State<OnBoardingScreen> createState() => _OnBoardingScreenState();
@@ -171,6 +173,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             Spacer(),
                             GestureDetector(
                               onTap: () {
+                                SharedPrefManger.setOnBoardingScreen(
+                                    value: true);
                                 Navigator.of(context)
                                     .pushNamed("locationSelectionParentView");
                               },
