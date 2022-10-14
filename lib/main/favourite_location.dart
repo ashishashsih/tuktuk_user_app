@@ -108,7 +108,7 @@ class FavouriteLocation extends StatelessWidget {
           return AlertDialog(
             title: const Text("Location"),
             content: const Text(
-                "We were not able to get your current location using your device's GPS, Please check device location permission for app from device's settings. Alternatively you can use search field above to select your pickup point."),
+                "We were not able to get your current location using your device's GPS, Please check device location permission for app from device's settings. Alternatively you can use search field above to select your pickup point.",),
             actions: [
               TextButton(
                   onPressed: () => Navigator.of(context).pop(),

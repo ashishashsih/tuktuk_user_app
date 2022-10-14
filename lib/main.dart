@@ -40,7 +40,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'generated/l10n.dart';
 import 'package:geolocator/geolocator.dart';
 
-// ignore: avoid_void_async
 void main() async {
   await initHiveForFlutter();
   WidgetsFlutterBinding.ensureInitialized();
