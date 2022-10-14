@@ -77,6 +77,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     getUser();
+    setState(() {});
     super.initState();
   }
 

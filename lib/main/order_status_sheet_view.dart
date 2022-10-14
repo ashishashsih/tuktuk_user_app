@@ -307,8 +307,10 @@ class OrderStatusSheetView extends StatelessWidget {
                                         final order =
                                             UpdateOrder$Mutation.fromJson(
                                                 result!.data!);
-                                        mainBloc.add(CurrentOrderUpdated(
-                                            order.updateOneOrder));
+                                        mainBloc.add(
+                                          CurrentOrderUpdated(
+                                              order.updateOneOrder),
+                                        );
                                       }
                                       break;
                                   }

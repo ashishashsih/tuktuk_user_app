@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:client_shared/components/user_avatar_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -77,17 +79,19 @@ class _PayForRideSheetViewState extends State<PayForRideSheetView> {
                         "Select Payment Method:",
                         style: Theme.of(context).textTheme.headlineMedium,
                       ).pOnly(bottom: 8),
-                      ...queryResult.paymentGateways.map((gateway) =>
-                          PaymentMethodItem(
-                              id: gateway.id,
-                              title: gateway.title,
-                              selectedValue: selectedGatewayId,
-                              imageAddress: gateway.media != null
-                                  ? (serverUrl + gateway.media!.address)
-                                  : null,
-                              onSelected: (value) {
-                                setState(() => selectedGatewayId = gateway.id);
-                              })),
+                      ...queryResult.paymentGateways.map(
+                        (gateway) => PaymentMethodItem(
+                            id: gateway.id,
+                            title: gateway.title,
+                            selectedValue: selectedGatewayId,
+                            imageAddress: gateway.media != null
+                                ? (serverUrl + gateway.media!.address)
+                                : null,
+                            onSelected: (value) {
+                              setState(() => selectedGatewayId = gateway.id);
+                              log("======SEL============$selectedGatewayId");
+                            }),
+                      ),
                       PayForRideInvoiceContainer(
                         serviceName: widget.order.service.name,
                         currency: widget.order.currency,
@@ -99,46 +103,42 @@ class _PayForRideSheetViewState extends State<PayForRideSheetView> {
                         },
                       ).pOnly(top: 16, bottom: 16),
                       SizedBox(
-                          width: double.infinity,
-                          child: Mutation(
-                              options: MutationOptions(
-                                  document: PAY_RIDE_MUTATION_DOCUMENT),
-                              builder: (RunMutation runMutation,
-                                  QueryResult? result) {
-                                return ElevatedButton(
-                                    onPressed: selectedGatewayId == null ||
-                                            getTotal() < 0
-                                        ? null
-                                        : () async {
-                                            final mutationResult =
-                                                await runMutation(PayRideArguments(
-                                                            orderId:
-                                                                widget.order.id,
-                                                            tipAmount:
-                                                                tipAmount,
-                                                            input: TopUpWalletInput(
-                                                                gatewayId:
-                                                                    selectedGatewayId!,
-                                                                amount:
-                                                                    getTotal(),
-                                                                currency: widget
-                                                                    .order
-                                                                    .currency))
-                                                        .toJson())
-                                                    .networkResult;
-                                            final resultParsed =
-                                                PayRide$Mutation.fromJson(
-                                                    mutationResult!.data!);
-                                            launchUrl(Uri.parse(
-                                                resultParsed.topUpWallet.url));
-                                            if (!mounted) {
-                                              return;
-                                            }
-                                            // Navigator.pop(context);
-                                          },
-                                    child: Text(
-                                        S.of(context).action_confirm_and_pay));
-                              }))
+                        width: double.infinity,
+                        child: Mutation(
+                          options: MutationOptions(
+                              document: PAY_RIDE_MUTATION_DOCUMENT),
+                          builder:
+                              (RunMutation runMutation, QueryResult? result) {
+                            return ElevatedButton(
+                              onPressed: selectedGatewayId == null ||
+                                      getTotal() < 0
+                                  ? null
+                                  : () async {
+                                      final mutationResult =
+                                          await runMutation(PayRideArguments(
+                                        orderId: widget.order.id,
+                                        tipAmount: tipAmount,
+                                        input: TopUpWalletInput(
+                                            gatewayId: selectedGatewayId!,
+                                            amount: getTotal(),
+                                            currency: widget.order.currency),
+                                      ).toJson())
+                                              .networkResult;
+                                      final resultParsed =
+                                          PayRide$Mutation.fromJson(
+                                              mutationResult!.data!);
+                                      launchUrl(Uri.parse(
+                                          resultParsed.topUpWallet.url));
+                                      if (!mounted) {
+                                        return;
+                                      }
+                                      // Navigator.pop(context);
+                                    },
+                              child: Text(S.of(context).action_confirm_and_pay),
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   );
                 }),

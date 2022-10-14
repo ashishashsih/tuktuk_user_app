@@ -47,154 +47,145 @@ class _LogInVerificationScreenState extends State<LogInVerificationScreen> {
                 children: [
                   Form(
                     key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.01,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Icon(
-                            Icons.arrow_back_ios,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03,
                           ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.03,
-                        ),
-                        Text(
-                          "Verification",
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "google_fonts/DaysOne-Regular.ttf",
-                          ),
-                        ),
-                        Text(
-                          "We have sent you an SMS on +91 ${are.mobileNumber} with a 6 digit verification code (OTP).",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xffACACAC),
-                          ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.04,
-                        ),
-                        Text(
-                          "Enter Code",
-                          style: TextStyle(
-                            color: Color(0xff464646),
-                            fontSize: 15,
-                          ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.01,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          child: PinCodeTextField(
-                            backgroundColor: Colors.transparent,
-                            textInputAction: TextInputAction.done,
-                            showCursor: false,
-                            pinTheme: PinTheme(
-                              borderRadius: BorderRadius.circular(5),
-                              shape: PinCodeFieldShape.box,
-                              fieldHeight:
-                                  MediaQuery.of(context).size.height * 0.06,
-                              fieldWidth:
-                                  MediaQuery.of(context).size.width * 0.12,
-                              activeColor: Colors.green,
-                              borderWidth: 1,
-                              inactiveColor: Colors.grey,
+                          Text(
+                            "Verification",
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "google_fonts/DaysOne-Regular.ttf",
                             ),
-                            keyboardType: TextInputType.number,
-                            appContext: context,
-                            length: 6,
-                            onChanged: (String value) {},
-                            controller: _otpController,
                           ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.03,
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.06,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.yellow,
-                            borderRadius: BorderRadius.circular(30),
+                          Text(
+                            "We have sent you an SMS on +91 ${are.mobileNumber} with a 6 digit verification code (OTP).",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xffACACAC),
+                            ),
                           ),
-                          child: GestureDetector(
-                            onTap: (result?.isLoading == true)
-                                ? null
-                                : () {
-                                    if (_otpController.text.length < 6) {
-                                      final snackBar = SnackBar(
-                                        content: Text(
-                                          S
-                                              .of(context)
-                                              .verify_phone_code_empty_message,
-                                        ),
-                                      );
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(snackBar);
-                                      return;
-                                    }
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.04,
+                          ),
+                          Text(
+                            "Enter Code",
+                            style: TextStyle(
+                              color: Color(0xff464646),
+                              fontSize: 15,
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.01,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            child: PinCodeTextField(
+                              backgroundColor: Colors.transparent,
+                              textInputAction: TextInputAction.done,
+                              showCursor: false,
+                              pinTheme: PinTheme(
+                                borderRadius: BorderRadius.circular(5),
+                                shape: PinCodeFieldShape.box,
+                                fieldHeight:
+                                    MediaQuery.of(context).size.height * 0.06,
+                                fieldWidth:
+                                    MediaQuery.of(context).size.width * 0.12,
+                                activeColor: Colors.green,
+                                borderWidth: 1,
+                                inactiveColor: Colors.grey,
+                              ),
+                              keyboardType: TextInputType.number,
+                              appContext: context,
+                              length: 6,
+                              onChanged: (String value) {},
+                              controller: _otpController,
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03,
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.06,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.yellow,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: GestureDetector(
+                              onTap: (result?.isLoading == true)
+                                  ? null
+                                  : () {
+                                      if (_otpController.text.length < 6) {
+                                        final snackBar = SnackBar(
+                                          content: Text(
+                                            S
+                                                .of(context)
+                                                .verify_phone_code_empty_message,
+                                          ),
+                                        );
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(snackBar);
+                                        return;
+                                      }
 
-                                    login(_otpController.text, runMutation,
-                                        are.verificationId);
-                                  },
-                            child: Center(
+                                      login(_otpController.text, runMutation,
+                                          are.verificationId);
+                                    },
+                              child: Center(
+                                child: Text(
+                                  S.of(context).verify,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03,
+                          ),
+                          Center(
+                            child: Text(
+                              "Didn't receive the code?",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Color(0xff292929),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03,
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.06,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.yellow,
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: const Center(
                               child: Text(
-                                S.of(context).verify,
-                                style: const TextStyle(
+                                "Update Phone Number",
+                                style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.black,
+                                  color: Colors.yellow,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.03,
-                        ),
-                        Center(
-                          child: Text(
-                            "Didn't receive the code?",
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Color(0xff292929),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.03,
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.06,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.yellow,
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Update Phone Number",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.yellow,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   if (result?.isLoading == true)

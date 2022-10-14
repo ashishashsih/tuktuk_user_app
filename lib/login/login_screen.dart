@@ -180,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 await Hive.openBox('user');
                                             box.put("jwt", jwt);
                                             if (!mounted) return;
-                                            Navigator.pop(context);
+                                            // Navigator.pop(context);
                                             context.read<JWTCubit>().login(jwt);
                                           },
                                           verificationFailed:

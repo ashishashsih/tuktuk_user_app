@@ -2403,8 +2403,7 @@ GetDriversLocation$Query _$GetDriversLocation$QueryFromJson(
         Map<String, dynamic> json) =>
     GetDriversLocation$Query()
       ..getDriversLocation = (json['getDriversLocation'] as List<dynamic>)
-          .map((e) => GetDriversLocation$Query$Point.fromJson(
-              e as Map<String, dynamic>))
+          .map((e) => GetDriversLocation$Query$Point.fromJson(e))
           .toList();
 
 Map<String, dynamic> _$GetDriversLocation$QueryToJson(

@@ -64,9 +64,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         ),
                       ),
                       Spacer(),
-                      Image.asset(
-                        "images/riksho_road.png",
-                        fit: BoxFit.cover,
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        width: MediaQuery.of(context).size.width,
+                        child: Image.asset(
+                          "images/riksho_road.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ],
                   ),
@@ -101,11 +105,14 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                               color: Color(0xffF4D206),
                             ),
                           ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.1,
-                          ),
-                          Image.asset(
-                            "images/auto.png",
+                          Spacer(),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            width: MediaQuery.of(context).size.width,
+                            child: Image.asset(
+                              "images/auto.png",
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ],
                       ),
